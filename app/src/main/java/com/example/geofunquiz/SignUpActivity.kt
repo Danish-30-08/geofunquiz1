@@ -21,17 +21,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-class LoginActivity : ComponentActivity() {
+class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LoginScreen(
-                onLoginClick = {
+            SignUpScreen(
+                onSignUpClick = {
                     startActivity(Intent(this, MainActivity::class.java))
                 },
-                onJoinNowClick = {
-                    startActivity(Intent(this, SignUpActivity::class.java))
+                onLoginClick = {
+                    finish() // balik ke LoginActivity
                 }
             )
         }
@@ -39,9 +39,9 @@ class LoginActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginScreen(
-    onLoginClick: () -> Unit,
-    onJoinNowClick: () -> Unit
+fun SignUpScreen(
+    onSignUpClick: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
 
     val backgroundColor = Color(0xFFE3F0FF)
@@ -75,21 +75,21 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Welcome Back, Explorer!",
+                text = "Ready for Adventure?",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1F2937)
             )
 
             Text(
-                text = "Sign in to find your treasures",
+                text = "Create an account and start the fun",
                 fontSize = 14.sp,
                 color = Color(0xFF6B7280)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 🧾 Login Card
+            // 🧾 Sign Up Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -97,10 +97,12 @@ fun LoginScreen(
             ) {
 
                 Column(
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier
+                        .padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
+                    // Email
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
@@ -115,6 +117,7 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    // Password
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -127,21 +130,11 @@ fun LoginScreen(
                         shape = RoundedCornerShape(12.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                    Text(
-                        text = "Forgot Password?",
-                        color = Color(0xFF2563EB),
-                        fontSize = 13.sp,
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .clickable { }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
+                    // Sign Up Button
                     Button(
-                        onClick = onLoginClick,
+                        onClick = onSignUpClick,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(52.dp),
@@ -151,7 +144,7 @@ fun LoginScreen(
                         )
                     ) {
                         Text(
-                            text = "Go!",
+                            text = "Sign Up!",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -161,14 +154,22 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // OR Divider
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Divider(modifier = Modifier.width(80.dp))
-                Text(" OR ", fontSize = 12.sp, color = Color.Gray)
+                Text(
+                    text = " OR ",
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
                 Divider(modifier = Modifier.width(80.dp))
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Google Button
             Button(
                 onClick = { },
                 modifier = Modifier
@@ -187,13 +188,14 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
+            // Login link
             Row {
-                Text("New here? ")
+                Text("Already have an account? ")
                 Text(
-                    text = "Join Now!",
+                    text = "Log In",
                     color = Color(0xFF2563EB),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onJoinNowClick() }
+                    modifier = Modifier.clickable { onLoginClick() }
                 )
             }
         }

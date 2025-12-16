@@ -14,6 +14,11 @@
             android:name=".MainActivity"
             android:exported="false" />
 
+        <!-- SIGN UP PAGE -->
+        <activity
+            android:name=".SignUpActivity"
+            android:exported="false" />
+
         <!-- LOGIN PAGE -->
         <activity
             android:name=".LoginActivity"
