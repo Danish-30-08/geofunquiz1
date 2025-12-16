@@ -9,12 +9,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Geofunquiz">
 
-        <!-- MAIN / QUIZ PAGE -->
+        <!-- QUIZ PAGE -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
 
-        <!-- LAUNCHER / WELCOME PAGE -->
+        <!-- LOGIN PAGE -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
+        <!-- WELCOME / LAUNCHER PAGE -->
         <activity
             android:name=".WelcomeActivity"
             android:exported="true">
