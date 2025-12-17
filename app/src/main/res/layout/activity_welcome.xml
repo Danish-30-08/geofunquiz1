@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFBEA">
+
+    <!-- Card background -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="300dp"
+        android:layout_height="450dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="6dp"
+        android:backgroundTint="#FFFBEA"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp">
+
+            <!-- Icon -->
+            <ImageView
+                android:id="@+id/imgGlobe"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_globe"
+                android:tint="#2F6BFF"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GeoFun Quiz"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#000000"/>
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time to explore the world!"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"/>
+
+            <!-- Button -->
+            <Button
+                android:id="@+id/btnPlay"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Let's Play!  >"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:backgroundTint="#2F6BFF"
+                android:textColor="#FFFFFF"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
