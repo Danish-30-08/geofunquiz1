@@ -7,12 +7,12 @@
     android:background="#FFFBEA">
 
     <!-- Card background -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="300dp"
         android:layout_height="450dp"
         app:cardCornerRadius="24dp"
         app:cardElevation="6dp"
-        android:backgroundTint="#FFFBEA"
+        app:cardBackgroundColor="#FFFBEA"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,6 +65,7 @@
                 android:textColor="#FFFFFF"/>
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">geofunquiz</string>
+
+    <string name="default_web_client_id">
+        328511658132-2a34cfl3mmv45dgkh8uj988fje2qg3n6.apps.googleusercontent.com
+    </string>
 </resources>

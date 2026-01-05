@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "328511658132",
+    "project_id": "geofunquiz-be8d2",
+    "storage_bucket": "geofunquiz-be8d2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328511658132:android:8cabf7e59790b81f847c81",
+        "android_client_info": {
+          "package_name": "com.example.geofunquiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328511658132-2a34cfl3mmv45dgkh8uj988fje2qg3n6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoADs18ksJvTtTgLZEa4m1zbva6MoFd5o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "328511658132-2a34cfl3mmv45dgkh8uj988fje2qg3n6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
