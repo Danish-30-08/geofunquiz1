@@ -3,7 +3,6 @@ package com.example.geofunquiz
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-<<<<<<< HEAD
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -23,15 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-=======
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import com.example.geofunquiz.ui.GeoFunApp
->>>>>>> 0d04bdc96162719797014901fa193d8687226b82
 
-// Custom Colors based on the image
+// 🎨 Custom Colors
 val BackgroundColor = Color(0xFFFFF9E6)
 val OrangeGradientStart = Color(0xFFFF8C42)
 val OrangeGradientEnd = Color(0xFFF05D5E)
@@ -46,7 +38,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-<<<<<<< HEAD
             JuniorExplorerScreen()
         }
     }
@@ -57,10 +48,10 @@ fun JuniorExplorerScreen() {
     Scaffold(
         bottomBar = { BottomNavigationBar() },
         containerColor = BackgroundColor
-    ) { paddingValues ->
+    ) { padding ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(padding)
                 .padding(24.dp)
                 .fillMaxSize()
         ) {
@@ -68,13 +59,16 @@ fun JuniorExplorerScreen() {
             Spacer(modifier = Modifier.height(24.dp))
             BonusLevelCard()
             Spacer(modifier = Modifier.height(32.dp))
+
             Text(
                 text = "Choose Your Mission",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333)
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             MissionCard(
                 icon = Icons.Rounded.Public,
                 iconColor = BlueIcon,
@@ -83,7 +77,9 @@ fun JuniorExplorerScreen() {
                 subtitle = "Guess the country flag",
                 playButtonColor = Color(0xFF4285F4)
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             MissionCard(
                 icon = Icons.Rounded.LocationOn,
                 iconColor = GreenIcon,
@@ -92,7 +88,9 @@ fun JuniorExplorerScreen() {
                 subtitle = "Match capitals to countries",
                 playButtonColor = Color(0xFF34A853)
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             MissionCard(
                 icon = Icons.Rounded.StarOutline,
                 iconColor = OrangeIcon,
@@ -113,41 +111,28 @@ fun HeaderSection() {
         verticalAlignment = Alignment.Top
     ) {
         Column {
-            Text(text = "Hi there,", fontSize = 16.sp, color = Color.Gray)
+            Text("Hi there,", fontSize = 16.sp, color = Color.Gray)
             Text(
-                text = "Junior Explorer!",
+                "Junior Explorer!",
                 fontSize = 28.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF333333)
+                fontWeight = FontWeight.ExtraBold
             )
-            Text(text = "🤩", fontSize = 32.sp)
+            Text("🤩", fontSize = 32.sp)
         }
 
         Card(
             shape = RoundedCornerShape(30.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Medal icon placeholder
-                Text(text = "🎗️", fontSize = 18.sp)
+                Text("🎗️", fontSize = 18.sp)
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "1200",
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 18.sp,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = "XP",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        color = Color.Black
-                    )
+                    Text("1200", fontWeight = FontWeight.Bold)
+                    Text("XP", fontSize = 12.sp)
                 }
             }
         }
@@ -157,23 +142,22 @@ fun HeaderSection() {
 @Composable
 fun BonusLevelCard() {
     Card(
-        shape = RoundedCornerShape(24.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(180.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(OrangeGradientStart, OrangeGradientEnd)
+                    Brush.horizontalGradient(
+                        listOf(OrangeGradientStart, OrangeGradientEnd)
                     )
                 )
                 .padding(20.dp)
         ) {
-            // Trophy decoration icon
             Icon(
                 imageVector = Icons.Rounded.EmojiEvents,
                 contentDescription = null,
@@ -184,45 +168,19 @@ fun BonusLevelCard() {
                 tint = Color.White.copy(alpha = 0.2f)
             )
 
-            Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween) {
-                Surface(
-                    color = Color.White.copy(alpha = 0.3f),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = "BONUS LEVEL",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                    )
-                }
-                
-                Column {
-                    Text(
-                        text = "Capital Cities Blitz",
-                        color = Color.White,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Earn 2x XP before the clock runs out!",
-                        color = Color.White.copy(alpha = 0.9f),
-                        fontSize = 14.sp
-                    )
-                }
-
+            Column(verticalArrangement = Arrangement.SpaceBetween) {
+                Text("BONUS LEVEL", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(
+                    "Capital Cities Blitz",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(horizontal = 24.dp)
+                    onClick = {},
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                 ) {
-                    Text(
-                        text = "Start Quest",
-                        color = OrangeGradientEnd,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Start Quest", color = OrangeGradientEnd)
                 }
             }
         }
@@ -239,15 +197,12 @@ fun MissionCard(
     playButtonColor: Color
 ) {
     Card(
-        shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -257,41 +212,23 @@ fun MissionCard(
                     .background(iconBg),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = iconColor,
-                    modifier = Modifier.size(28.dp)
-                )
+                Icon(icon, null, tint = iconColor)
             }
-            
+
             Spacer(modifier = Modifier.width(16.dp))
-            
+
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-                Text(
-                    text = subtitle,
-                    fontSize = 14.sp,
-                    color = Color.Gray
-                )
+                Text(title, fontWeight = FontWeight.Bold)
+                Text(subtitle, color = Color.Gray)
             }
-            
+
             IconButton(
-                onClick = { },
+                onClick = {},
                 modifier = Modifier
                     .size(40.dp)
                     .background(playButtonColor, CircleShape)
             ) {
-                Icon(
-                    imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = "Play",
-                    tint = Color.White
-                )
+                Icon(Icons.Filled.PlayArrow, null, tint = Color.White)
             }
         }
     }
@@ -299,70 +236,16 @@ fun MissionCard(
 
 @Composable
 fun BottomNavigationBar() {
-    NavigationBar(
-        containerColor = Color.White,
-        tonalElevation = 8.dp
-    ) {
-        NavigationBarItem(
-            selected = true,
-            onClick = { },
-            icon = { Icon(Icons.Rounded.Home, contentDescription = "Home") },
-            label = { Text("Home") },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xFF4285F4),
-                selectedTextColor = Color(0xFF4285F4),
-                unselectedIconColor = Color.Gray,
-                unselectedTextColor = Color.Gray,
-                indicatorColor = Color.Transparent
-            )
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(Icons.Rounded.Search, contentDescription = "Explore") },
-            label = { Text("Explore") },
-            colors = NavigationBarItemDefaults.colors(
-                unselectedIconColor = Color.Gray,
-                unselectedTextColor = Color.Gray
-            )
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(Icons.Rounded.TrendingUp, contentDescription = "Rank") },
-            label = { Text("Rank") },
-            colors = NavigationBarItemDefaults.colors(
-                unselectedIconColor = Color.Gray,
-                unselectedTextColor = Color.Gray
-            )
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(Icons.Rounded.PersonOutline, contentDescription = "Profile") },
-            label = { Text("Profile") },
-            colors = NavigationBarItemDefaults.colors(
-                unselectedIconColor = Color.Gray,
-                unselectedTextColor = Color.Gray
-            )
-        )
+    NavigationBar(containerColor = Color.White) {
+        NavigationBarItem(true, {}, { Icon(Icons.Rounded.Home, null) }, label = { Text("Home") })
+        NavigationBarItem(false, {}, { Icon(Icons.Rounded.Search, null) }, label = { Text("Explore") })
+        NavigationBarItem(false, {}, { Icon(Icons.Rounded.TrendingUp, null) }, label = { Text("Rank") })
+        NavigationBarItem(false, {}, { Icon(Icons.Rounded.PersonOutline, null) }, label = { Text("Profile") })
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun PreviewMain() {
     JuniorExplorerScreen()
 }
-=======
-            // Replace with your Theme name if different
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                GeoFunApp()
-            }
-        }
-    }
-}
->>>>>>> 0d04bdc96162719797014901fa193d8687226b82
