@@ -1,8 +1,10 @@
 package com.example.geofunquiz
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+<<<<<<< HEAD
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -34,68 +36,96 @@ val LightGreenBg = Color(0xFFE8F5E9)
 val GreenIcon = Color(0xFF66BB6A)
 val LightOrangeBg = Color(0xFFFFF3E0)
 val OrangeIcon = Color(0xFFFFA726)
+=======
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+>>>>>>> 31f7e03990417d8283cda98c44301122c3fcf6bb
 
 class MainActivity : ComponentActivity() {
+
+    // Lazily initialize AuthViewModel using the viewModels delegate
+    private val authViewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
+<<<<<<< HEAD
             JuniorExplorerScreen()
+=======
+            // Pass the logout logic directly to the MainScreen
+            MainScreen(
+                onLogout = {
+                    // Sign out from Firebase
+                    authViewModel.logout()
+
+                    // Build GoogleSignInOptions to ensure the token ID is available for sign-out
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build()
+
+                    // Sign out from Google to allow account picking next time
+                    GoogleSignIn.getClient(this, gso).signOut()
+
+                    // Navigate back to LoginActivity and clear the back stack
+                    val intent = Intent(this, LoginActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    startActivity(intent)
+                }
+            )
+>>>>>>> 31f7e03990417d8283cda98c44301122c3fcf6bb
         }
     }
 }
 
+// Add the OptIn annotation to acknowledge the use of an experimental Material 3 API
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JuniorExplorerScreen() {
+fun MainScreen(onLogout: () -> Unit) {
     Scaffold(
-        bottomBar = { BottomNavigationBar() },
-        containerColor = BackgroundColor
-    ) { paddingValues ->
+        topBar = {
+            TopAppBar(
+                title = { Text("GeoFunQuiz") },
+                actions = {
+                    TextButton(onClick = onLogout) {
+                        Text("Logout", color = Color.White) // Make text more visible if needed
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF3B82F6), // Example color
+                    titleContentColor = Color.White
+                )
+            )
+        }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
-                .padding(24.dp)
                 .fillMaxSize()
+                .padding(innerPadding) // Apply padding provided by Scaffold
+                .padding(16.dp) // Add your own content padding
         ) {
-            HeaderSection()
-            Spacer(modifier = Modifier.height(24.dp))
-            BonusLevelCard()
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = "Choose Your Mission",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            MissionCard(
-                icon = Icons.Rounded.Public,
-                iconColor = BlueIcon,
-                iconBg = LightBlueBg,
-                title = "Flag Detective",
-                subtitle = "Guess the country flag",
-                playButtonColor = Color(0xFF4285F4)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            MissionCard(
-                icon = Icons.Rounded.LocationOn,
-                iconColor = GreenIcon,
-                iconBg = LightGreenBg,
-                title = "Capital City Finder",
-                subtitle = "Match capitals to countries",
-                playButtonColor = Color(0xFF34A853)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            MissionCard(
-                icon = Icons.Rounded.StarOutline,
-                iconColor = OrangeIcon,
-                iconBg = LightOrangeBg,
-                title = "Fun Facts Trivia",
-                subtitle = "Trivia about culture & history",
-                playButtonColor = Color(0xFFFBBC05)
-            )
+            Text("Welcome to GeoFunQuiz!")
         }
     }
 }
+<<<<<<< HEAD
 
 @Composable
 fun HeaderSection() {
@@ -346,3 +376,5 @@ fun BottomNavigationBar() {
 fun DefaultPreview() {
     JuniorExplorerScreen()
 }
+=======
+>>>>>>> 31f7e03990417d8283cda98c44301122c3fcf6bb

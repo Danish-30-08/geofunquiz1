@@ -4,16 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +29,16 @@ class WelcomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            WelcomeScreen {
-                startActivity(Intent(this, LoginActivity::class.java))
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    WelcomeScreen {
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish() // ✅ UX BETUL
+                    }
+                }
             }
         }
     }
@@ -35,7 +47,7 @@ class WelcomeActivity : ComponentActivity() {
 @Composable
 fun WelcomeScreen(onPlayClick: () -> Unit) {
 
-    val backgroundColor = Color(0xFFFFF9DB)
+    val backgroundColor = Color(0xFFF4F7FD)
 
     Box(
         modifier = Modifier
@@ -46,23 +58,26 @@ fun WelcomeScreen(onPlayClick: () -> Unit) {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
 
-            // 🌍 Globe Icon
-            Icon(
-                imageVector = Icons.Default.Public,
-                contentDescription = null,
-                tint = Color(0xFF2F6BFF),
-                modifier = Modifier.size(120.dp)
+            // ✅ LOGO BULAT (KEMAS)
+            Image(
+                painter = painterResource(id = R.drawable.geofunquiz_logo),
+                contentDescription = "GeoFunQuiz Logo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(140.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .border(2.dp, Color(0xFF3B82F6), CircleShape)
             )
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // 📝 GeoFun Quiz title
             Text(
                 text = buildAnnotatedString {
                     append("Geo")
@@ -91,7 +106,6 @@ fun WelcomeScreen(onPlayClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // ▶ Button
             Button(
                 onClick = onPlayClick,
                 modifier = Modifier
@@ -101,10 +115,10 @@ fun WelcomeScreen(onPlayClick: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF3B82F6)
                 ),
-                elevation = ButtonDefaults.buttonElevation(10.dp)
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp)
             ) {
                 Text(
-                    text = "Let's Play!  >",
+                    text = "Let's Play  >",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
