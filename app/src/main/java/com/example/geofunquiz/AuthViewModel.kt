@@ -54,15 +54,10 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
             setLoading(true)
             try {
                 auth.createUserWithEmailAndPassword(email, password).await()
-
-                // send verification
-                auth.currentUser?.sendEmailVerification()?.await()
-                emitToast("Verification email sent. Please verify before login.")
-
-                // sign out after signup to force login flow
-                auth.signOut()
-
-                _event.emit(AuthEvent.NavigateToLogin(prefillEmail = email))
+                emitToast("Registration successful!")
+                
+                // Immediately navigate to Main instead of requiring verification
+                _event.emit(AuthEvent.NavigateToMain)
             } catch (e: Exception) {
                 emitToast(e.message ?: "Sign up failed")
             } finally {
@@ -86,20 +81,14 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
             setLoading(true)
             try {
                 auth.signInWithEmailAndPassword(email, password).await()
-
+                
                 val user = auth.currentUser
                 if (user == null) {
                     emitToast("Login failed")
                     return@launch
                 }
 
-                // Email verification enforcement
-                if (!user.isEmailVerified) {
-                    emitToast("Email not verified. Check your inbox or resend verification.")
-                    auth.signOut()
-                    return@launch
-                }
-
+                // Removed email verification check
                 _event.emit(AuthEvent.NavigateToMain)
             } catch (e: Exception) {
                 emitToast(e.message ?: "Login failed")
@@ -110,19 +99,7 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun resendVerification() {
-        viewModelScope.launch {
-            try {
-                val user = auth.currentUser
-                if (user == null) {
-                    emitToast("No user logged in to resend verification.")
-                    return@launch
-                }
-                user.sendEmailVerification().await()
-                emitToast("Verification email resent.")
-            } catch (e: Exception) {
-                emitToast(e.message ?: "Failed to resend verification")
-            }
-        }
+        emitToast("Email verification is disabled.")
     }
 
     fun resetPassword(emailRaw: String) {

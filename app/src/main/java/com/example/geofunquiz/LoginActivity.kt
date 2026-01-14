@@ -90,8 +90,7 @@ class LoginActivity : ComponentActivity() {
                 onLoginClick = { vm.loginEmailPassword(state.email, state.password) },
                 onGoogleClick = { googleLauncher.launch(googleClient.signInIntent) },
                 onSignUpClick = { startActivity(Intent(this, SignUpActivity::class.java)) },
-                onForgotPassword = { vm.resetPassword(state.email) },
-                onResendVerification = { vm.resendVerification() }
+                onForgotPassword = { vm.resetPassword(state.email) }
             )
         }
     }
@@ -107,8 +106,7 @@ fun LoginScreen(
     onLoginClick: () -> Unit,
     onGoogleClick: () -> Unit,
     onSignUpClick: () -> Unit,
-    onForgotPassword: () -> Unit,
-    onResendVerification: () -> Unit
+    onForgotPassword: () -> Unit
 ) {
     val focus = LocalFocusManager.current
 
@@ -173,16 +171,6 @@ fun LoginScreen(
                         )
                     }
 
-                    Spacer(Modifier.height(10.dp))
-
-                    // resend verification (useful if user tries login but not verified)
-                    Text(
-                        text = "Resend Verification Email",
-                        fontSize = 12.sp,
-                        color = Color(0xFF2563EB),
-                        modifier = Modifier.clickable(enabled = !loading) { onResendVerification() }
-                    )
-
                     Spacer(Modifier.height(12.dp))
 
                     Button(
@@ -192,7 +180,7 @@ fun LoginScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF22C55E))
                     ) {
                         if (loading) {
-                            CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                            CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = Color.White)
                             Spacer(Modifier.width(10.dp))
                             Text("Signing in...", fontWeight = FontWeight.Bold)
                         } else {

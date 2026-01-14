@@ -1,10 +1,12 @@
 package com.example.geofunquiz
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -13,9 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,24 +33,27 @@ data class Question(
 )
 
 @Composable
-fun QuizScreen(onBack: () -> Unit = {}) {
+fun QuizScreen(onFinish: (Int, Int) -> Unit) {
     val questions = remember {
         listOf(
             Question(1, "Which country does this flag belong to?", "BR", listOf("Brazil", "Argentina", "Portugal", "Spain"), 0),
             Question(2, "Identify this flag:", "JP", listOf("South Korea", "China", "Japan", "Vietnam"), 2),
-            // Add more questions here
+            Question(3, "Which country uses this flag?", "ID", listOf("Monaco", "Poland", "Indonesia", "Singapore"), 2),
+            Question(4, "This flag belongs to:", "US", listOf("United Kingdom", "Australia", "USA", "Liberia"), 2),
+            Question(5, "Name this country's flag:", "FR", listOf("Italy", "France", "Netherlands", "Russia"), 1)
         )
     }
 
-    var currentQuestionIndex by remember { mutableStateOf(0) }
-    var selectedOptionIndex by remember { mutableStateOf(-1) }
+    var currentQuestionIndex by remember { mutableIntStateOf(0) }
+    var selectedOptionIndex by remember { mutableIntStateOf(-1) }
     var isAnswered by remember { mutableStateOf(false) }
+    var score by remember { mutableIntStateOf(0) }
 
     val currentQuestion = questions[currentQuestionIndex]
     val progress = (currentQuestionIndex + 1).toFloat() / questions.size
 
     Scaffold(
-        containerColor = Color(0xFFF0F7FF) // Light blue background
+        containerColor = Color(0xFFF0F7FF) // Match light blue background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -55,20 +62,20 @@ fun QuizScreen(onBack: () -> Unit = {}) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Progress Bar
+            // Top Progress Bar
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
-                color = Color(0xFF22C55E), // Green progress
+                    .height(10.dp)
+                    .clip(CircleShape),
+                color = Color(0xFF22C55E), // Vibrant Green
                 trackColor = Color(0xFFD1E4FF)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Header: Question Number and Category
+            // Question Info Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -76,79 +83,85 @@ fun QuizScreen(onBack: () -> Unit = {}) {
             ) {
                 Text(
                     text = "Question ${currentQuestionIndex + 1}/${questions.size}",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Black,
                     fontSize = 18.sp,
-                    color = Color(0xFF334155)
+                    color = Color(0xFF1E293B)
                 )
 
                 Surface(
                     color = Color(0xFFD1E4FF),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(20.dp)
                 ) {
                     Text(
                         text = "FLAGS QUIZ",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.ExtraBold,
                         color = Color(0xFF2563EB)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // Question Text
+            // Question Title
             Text(
                 text = currentQuestion.text,
-                fontSize = 24.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.ExtraBold,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                textAlign = TextAlign.Center,
+                lineHeight = 32.sp,
                 color = Color(0xFF1E293B)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
-            // Flag Card (Placeholder for now)
+            // Flag Display Card
             Card(
                 modifier = Modifier
-                    .size(240.dp, 160.dp)
-                    .border(2.dp, Color(0xFFD1E4FF), RoundedCornerShape(16.dp)),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    .fillMaxWidth(0.85f)
+                    .aspectRatio(1.5f)
+                    .shadow(12.dp, RoundedCornerShape(24.dp)),
+                shape = RoundedCornerShape(24.dp),
+                border = BorderStroke(3.dp, Color(0xFFB9D8FF)),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                     Text(
                         text = currentQuestion.flagCode,
-                        fontSize = 64.sp,
+                        fontSize = 72.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
+                        color = Color(0xFF334155)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Options
-            currentQuestion.options.forEachIndexed { index, option ->
-                OptionItem(
-                    text = option,
-                    isSelected = selectedOptionIndex == index,
-                    isCorrect = currentQuestion.correctAnswerIndex == index,
-                    isAnswered = isAnswered,
-                    onClick = {
-                        if (!isAnswered) {
-                            selectedOptionIndex = index
-                            isAnswered = true
+            // Options List
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                currentQuestion.options.forEachIndexed { index, option ->
+                    OptionCard(
+                        text = option,
+                        isSelected = selectedOptionIndex == index,
+                        isCorrect = currentQuestion.correctAnswerIndex == index,
+                        isAnswered = isAnswered,
+                        onClick = {
+                            if (!isAnswered) {
+                                selectedOptionIndex = index
+                                isAnswered = true
+                                if (index == currentQuestion.correctAnswerIndex) {
+                                    score++
+                                }
+                            }
                         }
-                    }
-                )
-                Spacer(modifier = Modifier.height(12.dp))
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Next Button
+            // Next Question Button
             if (isAnswered) {
                 Button(
                     onClick = {
@@ -157,17 +170,15 @@ fun QuizScreen(onBack: () -> Unit = {}) {
                             selectedOptionIndex = -1
                             isAnswered = false
                         } else {
-                            // Quiz Finished!
-                            onBack()
+                            onFinish(score, questions.size)
                         }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(60.dp)
+                        .shadow(8.dp, RoundedCornerShape(16.dp)),
                     shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     contentPadding = PaddingValues()
                 ) {
                     Box(
@@ -181,8 +192,8 @@ fun QuizScreen(onBack: () -> Unit = {}) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (currentQuestionIndex < questions.size - 1) "Next Question" else "Finish",
-                            fontSize = 18.sp,
+                            text = if (currentQuestionIndex < questions.size - 1) "Next Question" else "Finish Quiz",
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
@@ -194,37 +205,50 @@ fun QuizScreen(onBack: () -> Unit = {}) {
 }
 
 @Composable
-fun OptionItem(
+fun OptionCard(
     text: String,
     isSelected: Boolean,
     isCorrect: Boolean,
     isAnswered: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor by animateColorAsState(
-        targetValue = when {
-            isAnswered && isCorrect -> Color(0xFF22C55E)
-            isSelected && isAnswered && !isCorrect -> Color(0xFFEF4444)
-            isSelected -> Color(0xFFD1E4FF)
-            else -> Color.White
-        },
-        label = "bgColor"
-    )
+    // Determine target colors for background and content
+    val targetBgColor = when {
+        isAnswered -> when {
+            isCorrect -> Color(0xFF22C55E) // Green for correct
+            isSelected -> Color(0xFFEF4444) // Red for wrong selection
+            else -> Color.White.copy(alpha = 0.5f) // Faded white
+        }
+        isSelected -> Color(0xFFD1E4FF) // Light blue when clicked before answer
+        else -> Color.White
+    }
 
-    val contentColor = if (isAnswered && (isCorrect || isSelected)) Color.White else Color(0xFF334155)
+    val targetContentColor = when {
+        isAnswered -> if (isCorrect || isSelected) Color.White else Color(0xFF94A3B8)
+        else -> Color(0xFF1E293B)
+    }
+
+    val animatedBgColor by animateColorAsState(targetValue = targetBgColor, label = "bg")
+    val animatedContentColor by animateColorAsState(targetValue = targetContentColor, label = "text")
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .height(64.dp)
+            .border(
+                width = if (isSelected && !isAnswered) 2.dp else 0.dp,
+                color = Color(0xFF2563EB),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .shadow(if (isSelected && !isAnswered) 0.dp else 4.dp, RoundedCornerShape(16.dp))
             .clickable(enabled = !isAnswered) { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 0.dp else 2.dp)
+        colors = CardDefaults.cardColors(containerColor = animatedBgColor)
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .padding(horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -232,14 +256,15 @@ fun OptionItem(
                 text = text,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = contentColor
+                color = animatedContentColor
             )
 
             if (isAnswered && isCorrect) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
-                    contentDescription = null,
-                    tint = Color.White
+                    contentDescription = "Correct",
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
@@ -248,6 +273,6 @@ fun OptionItem(
 
 @Preview(showBackground = true)
 @Composable
-fun QuizScreenPreview() {
-    QuizScreen()
+fun QuizInterfacePreview() {
+    QuizScreen(onFinish = { _, _ -> })
 }

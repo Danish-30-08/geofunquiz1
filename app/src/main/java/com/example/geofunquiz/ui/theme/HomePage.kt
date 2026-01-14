@@ -30,7 +30,10 @@ val GreenIcon = Color(0xFF66BB6A)
 val OrangeIcon = Color(0xFFFFA726)
 
 @Composable
-fun JuniorExplorerScreen() {
+fun JuniorExplorerScreen(
+    onStartQuiz: () -> Unit = {},
+    onLogout: () -> Unit = {}
+) {
     Scaffold(
         bottomBar = { BottomNavigationBar() },
         containerColor = BackgroundColor
@@ -41,9 +44,9 @@ fun JuniorExplorerScreen() {
                 .padding(24.dp)
                 .fillMaxSize()
         ) {
-            HeaderSection()
+            HeaderSection(onLogout = onLogout)
             Spacer(modifier = Modifier.height(24.dp))
-            BonusLevelCard()
+            BonusLevelCard(onStartQuiz = onStartQuiz)
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Choose Your Mission",
@@ -58,7 +61,8 @@ fun JuniorExplorerScreen() {
                 iconBg = Color(0xFFE3F2FD),
                 title = "Flag Detective",
                 subtitle = "Guess the country flag",
-                playButtonColor = Color(0xFF4285F4)
+                playButtonColor = Color(0xFF4285F4),
+                onPlayClick = onStartQuiz
             )
             Spacer(modifier = Modifier.height(16.dp))
             MissionCard(
@@ -83,7 +87,7 @@ fun JuniorExplorerScreen() {
 }
 
 @Composable
-fun HeaderSection() {
+fun HeaderSection(onLogout: () -> Unit = {}) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -100,28 +104,34 @@ fun HeaderSection() {
             Text(text = "🤩", fontSize = 32.sp)
         }
 
-        Card(
-            shape = RoundedCornerShape(30.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+        Column(horizontalAlignment = Alignment.End) {
+            Card(
+                shape = RoundedCornerShape(30.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                Text(text = "🎗️", fontSize = 18.sp)
-                Spacer(modifier = Modifier.width(8.dp))
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "1200", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)
-                    Text(text = "XP", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "🎗️", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "1200", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)
+                        Text(text = "XP", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    }
                 }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(onClick = onLogout) {
+                Text("Logout", color = Color(0xFFF05D5E), fontSize = 12.sp)
             }
         }
     }
 }
 
 @Composable
-fun BonusLevelCard() {
+fun BonusLevelCard(onStartQuiz: () -> Unit = {}) {
     Card(
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier.fillMaxWidth().height(180.dp),
@@ -157,7 +167,7 @@ fun BonusLevelCard() {
                 }
 
                 Button(
-                    onClick = { },
+                    onClick = onStartQuiz,
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -169,7 +179,15 @@ fun BonusLevelCard() {
 }
 
 @Composable
-fun MissionCard(icon: ImageVector, iconColor: Color, iconBg: Color, title: String, subtitle: String, playButtonColor: Color) {
+fun MissionCard(
+    icon: ImageVector,
+    iconColor: Color,
+    iconBg: Color,
+    title: String,
+    subtitle: String,
+    playButtonColor: Color,
+    onPlayClick: () -> Unit = {}
+) {
     Card(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth(),
@@ -185,7 +203,10 @@ fun MissionCard(icon: ImageVector, iconColor: Color, iconBg: Color, title: Strin
                 Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Text(text = subtitle, fontSize = 14.sp, color = Color.Gray)
             }
-            IconButton(onClick = { }, modifier = Modifier.size(40.dp).background(playButtonColor, CircleShape)) {
+            IconButton(
+                onClick = onPlayClick,
+                modifier = Modifier.size(40.dp).background(playButtonColor, CircleShape)
+            ) {
                 Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "Play", tint = Color.White)
             }
         }
