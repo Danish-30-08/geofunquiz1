@@ -32,6 +32,7 @@ val OrangeIcon = Color(0xFFFFA726)
 @Composable
 fun JuniorExplorerScreen(
     onStartQuiz: () -> Unit = {},
+    onStartCapitalsQuiz: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
     Scaffold(
@@ -46,7 +47,7 @@ fun JuniorExplorerScreen(
         ) {
             HeaderSection(onLogout = onLogout)
             Spacer(modifier = Modifier.height(24.dp))
-            BonusLevelCard(onStartQuiz = onStartQuiz)
+            BonusLevelCard(onStartQuiz = onStartCapitalsQuiz)
             Spacer(modifier = Modifier.height(32.dp))
             Text(
                 text = "Choose Your Mission",
@@ -71,7 +72,8 @@ fun JuniorExplorerScreen(
                 iconBg = Color(0xFFE8F5E9),
                 title = "Capital City Finder",
                 subtitle = "Match capitals to countries",
-                playButtonColor = Color(0xFF34A853)
+                playButtonColor = Color(0xFF34A853),
+                onPlayClick = onStartCapitalsQuiz
             )
             Spacer(modifier = Modifier.height(16.dp))
             MissionCard(

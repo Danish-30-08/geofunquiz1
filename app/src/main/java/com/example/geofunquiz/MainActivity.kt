@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
                 "home" -> {
                     JuniorExplorerScreen(
                         onStartQuiz = { currentScreen = "quiz" },
+                        onStartCapitalsQuiz = { currentScreen = "capitals_quiz" },
                         onLogout = { handleLogout() }
                     )
                 }
@@ -39,11 +40,20 @@ class MainActivity : ComponentActivity() {
                         }
                     )
                 }
+                "capitals_quiz" -> {
+                    CapitalsQuizScreen(
+                        onFinish = { score, total ->
+                            finalScore = score
+                            totalQuestions = total
+                            currentScreen = "score"
+                        }
+                    )
+                }
                 "score" -> {
                     ScoreScreen(
                         score = finalScore,
                         totalQuestions = totalQuestions,
-                        onPlayAgain = { currentScreen = "quiz" },
+                        onPlayAgain = { currentScreen = "home" },
                         onGoHome = { currentScreen = "home" }
                     )
                 }
