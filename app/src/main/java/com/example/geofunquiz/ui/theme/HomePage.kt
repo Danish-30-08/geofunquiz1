@@ -35,11 +35,11 @@ val TriviaIconBg = Color(0xFFFFEDD5)
 
 @Composable
 fun JuniorExplorerScreen(
+    xp: Int = 0,
     onStartQuiz: () -> Unit = {},
     onStartCapitalsQuiz: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
-    // Removed Scaffold from here because it's already in MainActivity
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = BackgroundColor
@@ -50,7 +50,7 @@ fun JuniorExplorerScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            HeaderSection(onLogout = onLogout)
+            HeaderSection(xp = xp)
             
             Spacer(modifier = Modifier.height(24.dp))
             
@@ -116,7 +116,7 @@ fun JuniorExplorerScreen(
 }
 
 @Composable
-fun HeaderSection(onLogout: () -> Unit = {}) {
+fun HeaderSection(xp: Int = 0) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -141,8 +141,7 @@ fun HeaderSection(onLogout: () -> Unit = {}) {
         ) {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .clickable { onLogout() },
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -153,7 +152,7 @@ fun HeaderSection(onLogout: () -> Unit = {}) {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "1200", fontWeight = FontWeight.Black, fontSize = 18.sp, color = Color(0xFF1E293B))
+                    Text(text = "$xp", fontWeight = FontWeight.Black, fontSize = 18.sp, color = Color(0xFF1E293B))
                     Text(text = "XP", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color(0xFF64748B))
                 }
             }
@@ -330,5 +329,5 @@ fun BottomNavigationBar(
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    JuniorExplorerScreen()
+    JuniorExplorerScreen(xp = 1200)
 }

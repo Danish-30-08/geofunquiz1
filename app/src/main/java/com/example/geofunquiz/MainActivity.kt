@@ -24,6 +24,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val authState by authViewModel.ui.collectAsState()
+            
             // State to handle main navigation
             var currentTab by remember { mutableStateOf("home") }
             var currentScreen by remember { mutableStateOf("main") }
@@ -46,6 +48,7 @@ class MainActivity : ComponentActivity() {
                         when (currentTab) {
                             "home" -> {
                                 JuniorExplorerScreen(
+                                    xp = authState.xp,
                                     onStartQuiz = { currentScreen = "quiz" },
                                     onStartCapitalsQuiz = { currentScreen = "capitals_quiz" },
                                     onLogout = { handleLogout() }
@@ -73,6 +76,7 @@ class MainActivity : ComponentActivity() {
                                 finalScore = score
                                 totalQuestions = total
                                 currentScreen = "score"
+                                authViewModel.saveQuizScore(score)
                             }
                         )
                     }
@@ -82,6 +86,7 @@ class MainActivity : ComponentActivity() {
                                 finalScore = score
                                 totalQuestions = total
                                 currentScreen = "score"
+                                authViewModel.saveQuizScore(score)
                             }
                         )
                     }
