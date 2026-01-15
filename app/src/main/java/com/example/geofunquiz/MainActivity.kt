@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.example.geofunquiz.ui.theme.BottomNavigationBar
 import com.example.geofunquiz.ui.theme.JuniorExplorerScreen
+import com.example.geofunquiz.ui.theme.RankScreen
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
@@ -52,6 +53,9 @@ class MainActivity : ComponentActivity() {
                             }
                             "explore" -> {
                                 ExploreScreen()
+                            }
+                            "rank" -> {
+                                RankScreen()
                             }
                             else -> {
                                 // Default content
