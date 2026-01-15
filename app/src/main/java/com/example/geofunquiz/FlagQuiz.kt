@@ -18,11 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 data class Question(
     val id: Int,
@@ -40,7 +42,17 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
             Question(2, "Identify this flag:", "JP", listOf("South Korea", "China", "Japan", "Vietnam"), 2),
             Question(3, "Which country uses this flag?", "ID", listOf("Monaco", "Poland", "Indonesia", "Singapore"), 2),
             Question(4, "This flag belongs to:", "US", listOf("United Kingdom", "Australia", "USA", "Liberia"), 2),
-            Question(5, "Name this country's flag:", "FR", listOf("Italy", "France", "Netherlands", "Russia"), 1)
+            Question(5, "Name this country's flag:", "FR", listOf("Italy", "France", "Netherlands", "Russia"), 1),
+            Question(6, "Identify this flag:", "DE", listOf("Belgium", "Germany", "Austria", "Switzerland"), 1),
+            Question(7, "Which country does this flag belong to?", "IT", listOf("Ireland", "Spain", "Italy", "Mexico"), 2),
+            Question(8, "This flag belongs to:", "CA", listOf("Canada", "USA", "Turkey", "Switzerland"), 0),
+            Question(9, "Identify this flag:", "AU", listOf("New Zealand", "United Kingdom", "Australia", "Fiji"), 2),
+            Question(10, "Name this country's flag:", "EG", listOf("Syria", "Iraq", "Egypt", "Yemen"), 2),
+            Question(11, "Which country uses this flag?", "ZA", listOf("Namibia", "South Africa", "Zimbabwe", "Kenya"), 1),
+            Question(12, "Identify this flag:", "KR", listOf("China", "Japan", "North Korea", "South Korea"), 3),
+            Question(13, "This flag belongs to:", "TH", listOf("Thailand", "Vietnam", "Cambodia", "Laos"), 0),
+            Question(14, "Which country does this flag belong to?", "ES", listOf("Spain", "Portugal", "Mexico", "Italy"), 0),
+            Question(15, "Identify this flag:", "MX", listOf("Italy", "Ireland", "Mexico", "India"), 2)
         )
     }
 
@@ -127,11 +139,11 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = currentQuestion.flagCode,
-                        fontSize = 72.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF334155)
+                    AsyncImage(
+                        model = "https://flagcdn.com/w640/${currentQuestion.flagCode.lowercase()}.png",
+                        contentDescription = "Flag",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit
                     )
                 }
             }

@@ -59,6 +59,9 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation("androidx.compose.material:material-icons-extended")
+    
+    // Coil for flag images
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // ---------- Firebase ----------
     implementation(platform(libs.firebase.bom))
