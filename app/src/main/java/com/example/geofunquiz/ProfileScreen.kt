@@ -17,68 +17,112 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProfileScreen(onLogout: () -> Unit) {
+fun ProfileScreen(
+    xp: Int, // Data XP sebenar dari Firebase melalui MainActivity
+    onLogout: () -> Unit // Fungsi untuk butang Leave Game
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFBE6)) // Warna kuning krim sama dengan Home
+            .background(Color(0xFFFFFBE6)) // Kuning krim selaras dengan Home
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 1. Gambar Profil (Bulat)
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // --- 1. Gambar Profil ---
         Box(
             modifier = Modifier
-                .size(100.dp)
+                .size(120.dp)
                 .clip(CircleShape)
-                .border(4.dp, Color(0xFF3B82F6), CircleShape) // Biru
-                .background(Color.White),
+                .background(Color.White)
+                .border(4.dp, Color(0xFF3B82F6), CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Rounded.Person, contentDescription = null, modifier = Modifier.size(60.dp), tint = Color(0xFF3B82F6))
+            Icon(
+                imageVector = Icons.Rounded.Person,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = Color(0xFF3B82F6)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Junior Explorer", fontSize = 28.sp, fontWeight = FontWeight.Black)
-        Text("Level 5 • Map Maestro", color = Color.Gray, fontWeight = FontWeight.Bold)
+
+        // --- 2. Nama & Level ---
+        Text(
+            text = "Junior Explorer",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Black,
+            color = Color(0xFF1E293B)
+        )
+        Text(
+            text = "Level 5 • Map Maestro",
+            fontSize = 16.sp,
+            color = Color.Gray,
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 2. XP & Rank Row
-        Row(modifier = Modifier.fillMaxWidth()) {
-            ProfileStatCard("TOTAL XP", "1200", Modifier.weight(1f))
-            Spacer(modifier = Modifier.width(16.dp))
-            ProfileStatCard("CURRENT RANK", "#124", Modifier.weight(1f))
+        // --- 3. Kotak Statistik (Data Dinamik) ---
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            ProfileStatCard(
+                label = "TOTAL XP",
+                value = xp.toString(), // Papar XP dari database
+                modifier = Modifier.weight(1f)
+            )
+            ProfileStatCard(
+                label = "CURRENT RANK",
+                value = "#124",
+                modifier = Modifier.weight(1f)
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // 3. Badge Collection Title
+        // --- 4. Koleksi Lencana (Dengan Logik Unlock) ---
         Text(
-            "Your Badge Collection",
+            text = "Your Badge Collection",
             modifier = Modifier.fillMaxWidth(),
+            fontSize = 20.sp,
             fontWeight = FontWeight.Black,
-            fontSize = 20.sp
+            color = Color(0xFF1E293B)
         )
 
-        // Grid Badge (3 lajur)
         Spacer(modifier = Modifier.height(16.dp))
-        repeat(2) { // 2 Baris
-            Row(modifier = Modifier.fillMaxWidth()) {
-                repeat(3) { // 3 Item sembaris
-                    Box(modifier = Modifier.weight(1f).padding(4.dp)) {
-                        LockedBadgeItem()
-                    }
-                }
+
+        // Grid Lencana
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            // Baris 1
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                // Unlock jika XP >= 100
+                BadgeItem(label = "Starter", isLocked = xp < 100, modifier = Modifier.weight(1f))
+                // Unlock jika XP >= 500
+                BadgeItem(label = "Explorer", isLocked = xp < 500, modifier = Modifier.weight(1f))
+                // Unlock jika XP >= 1000
+                BadgeItem(label = "Master", isLocked = xp < 1000, modifier = Modifier.weight(1f))
+            }
+            // Baris 2 (Masih Locked sebagai cabaran)
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                BadgeItem(label = "Elite", isLocked = xp < 2000, modifier = Modifier.weight(1f))
+                BadgeItem(label = "Legend", isLocked = xp < 5000, modifier = Modifier.weight(1f))
+                BadgeItem(label = "King", isLocked = xp < 10000, modifier = Modifier.weight(1f))
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
-        // 4. Butang Leave Game
+        // --- 5. Butang Leave Game ---
         Button(
             onClick = onLogout,
-            modifier = Modifier.fillMaxWidth().height(55.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             shape = RoundedCornerShape(16.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
@@ -87,6 +131,8 @@ fun ProfileScreen(onLogout: () -> Unit) {
             Spacer(modifier = Modifier.width(8.dp))
             Text("Leave Game", color = Color.Red, fontWeight = FontWeight.Black)
         }
+
+        Spacer(modifier = Modifier.height(100.dp))
     }
 }
 
@@ -98,25 +144,43 @@ fun ProfileStatCard(label: String, value: String, modifier: Modifier) {
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
-        Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
-            Text(value, fontSize = 24.sp, fontWeight = FontWeight.Black, color = Color(0xFF1E293B))
+        Column(
+            modifier = Modifier.padding(vertical = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray)
+            Text(value, fontSize = 26.sp, fontWeight = FontWeight.Black, color = Color(0xFF1E293B))
         }
     }
 }
 
 @Composable
-fun LockedBadgeItem() {
+fun BadgeItem(label: String, isLocked: Boolean, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(1f)
-            .background(Color.White, RoundedCornerShape(16.dp))
-            .border(2.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp)),
+            .background(Color.White, RoundedCornerShape(20.dp))
+            .border(
+                width = 2.dp,
+                color = if (isLocked) Color(0xFFE2E8F0) else Color(0xFF3B82F6),
+                shape = RoundedCornerShape(20.dp)
+            ),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(Icons.Rounded.Lock, contentDescription = null, tint = Color.LightGray)
-            Text("Locked", fontSize = 10.sp, color = Color.LightGray)
+            Icon(
+                imageVector = if (isLocked) Icons.Rounded.Lock else Icons.Rounded.EmojiEvents,
+                contentDescription = null,
+                tint = if (isLocked) Color(0xFFCBD5E1) else Color(0xFFFFD700), // Warna emas jika unlock
+                modifier = Modifier.size(30.dp)
+            )
+            Text(
+                text = if (isLocked) "Locked" else label,
+                fontSize = 11.sp,
+                color = if (isLocked) Color(0xFF94A3B8) else Color(0xFF3B82F6),
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

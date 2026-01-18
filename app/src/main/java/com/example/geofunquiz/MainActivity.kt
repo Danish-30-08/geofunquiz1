@@ -24,11 +24,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            // Mengambil state terkini (termasuk XP) daripada ViewModel
             val authState by authViewModel.ui.collectAsState()
 
+            // State untuk navigasi tab bawah
             var currentTab by remember { mutableStateOf("home") }
+            // State untuk pertukaran antara skrin utama dan skrin kuiz
             var currentScreen by remember { mutableStateOf("main") }
 
+            // Simpan skor sementara untuk paparan skrin skor
             var finalScore by remember { mutableIntStateOf(0) }
             var totalQuestions by remember { mutableIntStateOf(0) }
 
@@ -41,28 +45,38 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
+                    // innerPadding mengelakkan kandungan bertindih dengan BottomBar
                     Box(modifier = Modifier.padding(innerPadding)) {
                         when (currentTab) {
                             "home" -> {
                                 JuniorExplorerScreen(
-                                    xp = authState.xp,
+                                    xp = authState.xp, // Data XP daripada database
                                     onStartQuiz = { currentScreen = "quiz" },
                                     onStartCapitalsQuiz = { currentScreen = "capitals_quiz" },
                                     onLogout = { handleLogout() }
                                 )
                             }
-                            "explore" -> { ExploreScreen() }
-                            "rank" -> { RankScreen() }
-                            "profile" -> {
-                                // Memanggil screen anda
-                                ProfileScreen(onLogout = { handleLogout() })
+                            "explore" -> {
+                                ExploreScreen()
                             }
-                            else -> { Box {} }
+                            "rank" -> {
+                                RankScreen()
+                            }
+                            "profile" -> {
+                                // Menghantar data XP ke ProfileScreen anda
+                                ProfileScreen(
+                                    xp = authState.xp,
+                                    onLogout = { handleLogout() }
+                                )
+                            }
+                            else -> {
+                                Box {}
+                            }
                         }
                     }
                 }
             } else {
-                // Skrin Fullscreen (Quiz/Score)
+                // Logik untuk skrin Kuiz dan Skor (Fullscreen)
                 when (currentScreen) {
                     "quiz" -> {
                         QuizScreen(
@@ -70,6 +84,7 @@ class MainActivity : ComponentActivity() {
                                 finalScore = score
                                 totalQuestions = total
                                 currentScreen = "score"
+                                // Simpan skor ke Firebase
                                 authViewModel.saveQuizScore(score)
                             }
                         )
@@ -80,6 +95,7 @@ class MainActivity : ComponentActivity() {
                                 finalScore = score
                                 totalQuestions = total
                                 currentScreen = "score"
+                                // Simpan skor ke Firebase
                                 authViewModel.saveQuizScore(score)
                             }
                         )
@@ -97,15 +113,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Fungsi handleLogout mesti berada di luar onCreate
+    /**
+     * Fungsi untuk menguruskan proses log keluar (Google & Firebase)
+     */
     private fun handleLogout() {
-        authViewModel.logout()
+        authViewModel.logout() // Sign out daripada Firebase
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-        GoogleSignIn.getClient(this, gso).signOut()
+        GoogleSignIn.getClient(this, gso).signOut() // Sign out daripada Google Account
 
+        // Kembali ke skrin Login dan kosongkan 'back stack'
         val intent = Intent(this, LoginActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
