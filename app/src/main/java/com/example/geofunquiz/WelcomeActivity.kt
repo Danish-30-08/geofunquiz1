@@ -35,7 +35,7 @@ class WelcomeActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     WelcomeScreen {
-                        startActivity(Intent(this, LoginActivity::class.java))
+                                                                                                                                                                                                startActivity(Intent(this, LoginActivity::class.java))
                         finish() // ✅ UX BETUL
                     }
                 }

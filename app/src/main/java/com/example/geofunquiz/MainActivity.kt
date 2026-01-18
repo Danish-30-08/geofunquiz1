@@ -25,12 +25,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val authState by authViewModel.ui.collectAsState()
-            
-            // State to handle main navigation
+
             var currentTab by remember { mutableStateOf("home") }
             var currentScreen by remember { mutableStateOf("main") }
-            
-            // Quiz results state
+
             var finalScore by remember { mutableIntStateOf(0) }
             var totalQuestions by remember { mutableIntStateOf(0) }
 
@@ -43,7 +41,6 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) { innerPadding ->
-                    // Correctly use innerPadding to avoid content overlapping with BottomBar
                     Box(modifier = Modifier.padding(innerPadding)) {
                         when (currentTab) {
                             "home" -> {
@@ -54,21 +51,18 @@ class MainActivity : ComponentActivity() {
                                     onLogout = { handleLogout() }
                                 )
                             }
-                            "explore" -> {
-                                ExploreScreen()
+                            "explore" -> { ExploreScreen() }
+                            "rank" -> { RankScreen() }
+                            "profile" -> {
+                                // Memanggil screen anda
+                                ProfileScreen(onLogout = { handleLogout() })
                             }
-                            "rank" -> {
-                                RankScreen()
-                            }
-                            else -> {
-                                // Default content
-                                Box {}
-                            }
+                            else -> { Box {} }
                         }
                     }
                 }
             } else {
-                // Handle Quiz and Score screens (fullscreen)
+                // Skrin Fullscreen (Quiz/Score)
                 when (currentScreen) {
                     "quiz" -> {
                         QuizScreen(
@@ -103,6 +97,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Fungsi handleLogout mesti berada di luar onCreate
     private fun handleLogout() {
         authViewModel.logout()
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
