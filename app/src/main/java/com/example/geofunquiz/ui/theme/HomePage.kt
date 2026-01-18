@@ -1,7 +1,6 @@
 package com.example.geofunquiz.ui.theme
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -38,6 +37,7 @@ fun JuniorExplorerScreen(
     xp: Int = 0,
     onStartQuiz: () -> Unit = {},
     onStartCapitalsQuiz: () -> Unit = {},
+    onStartTrivia: () -> Unit = {}, // Parameter baru untuk Trivia
     onLogout: () -> Unit = {}
 ) {
     Surface(
@@ -51,23 +51,23 @@ fun JuniorExplorerScreen(
                 .padding(24.dp)
         ) {
             HeaderSection(xp = xp)
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             BonusLevelCard(onStartQuiz = onStartCapitalsQuiz)
-            
+
             Spacer(modifier = Modifier.height(32.dp))
-            
+
             Text(
                 text = "Choose Your Mission",
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
                 color = Color(0xFF1E293B)
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Flag Detective Card
+
+            // 1. Flag Detective Card
             MissionCard(
                 icon = Icons.Rounded.Public,
                 iconColor = Color.White,
@@ -78,10 +78,10 @@ fun JuniorExplorerScreen(
                 playButtonColor = Color(0xFF3B82F6),
                 onPlayClick = onStartQuiz
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Capital City Finder Card
+
+            // 2. Capital City Finder Card
             MissionCard(
                 icon = Icons.Rounded.LocationOn,
                 iconColor = Color(0xFF22C55E),
@@ -94,10 +94,10 @@ fun JuniorExplorerScreen(
                 showBottomGradient = true,
                 gradientColor = Color(0xFFDCFCE7)
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Fun Facts Trivia Card
+
+            // 3. Fun Facts Trivia Card (Kini Berfungsi!)
             MissionCard(
                 icon = Icons.Rounded.Star,
                 iconColor = Color(0xFFF97316),
@@ -106,10 +106,11 @@ fun JuniorExplorerScreen(
                 title = "Fun Facts Trivia",
                 subtitle = "Trivia about culture & history",
                 playButtonColor = Color(0xFFF97316),
+                onPlayClick = onStartTrivia, // Disambungkan ke navigasi
                 showBottomGradient = true,
                 gradientColor = Color(0xFFFFEDD5)
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
@@ -176,7 +177,6 @@ fun BonusLevelCard(onStartQuiz: () -> Unit = {}) {
                 .background(Brush.linearGradient(OrangeGradient))
                 .padding(24.dp)
         ) {
-            // Background Trophy Icon
             Icon(
                 imageVector = Icons.Rounded.EmojiEvents,
                 contentDescription = null,
@@ -200,7 +200,7 @@ fun BonusLevelCard(onStartQuiz: () -> Unit = {}) {
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
-                
+
                 Column {
                     Text(text = "Capital Cities Blitz", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
                     Text(text = "Earn 2x XP before the clock runs out!", color = Color.White.copy(alpha = 0.9f), fontSize = 13.sp)
@@ -251,7 +251,7 @@ fun MissionCard(
                         .background(gradientColor)
                 )
             }
-            
+
             Row(
                 modifier = Modifier.padding(16.dp).fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -265,14 +265,14 @@ fun MissionCard(
                 ) {
                     Icon(imageVector = icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(28.dp))
                 }
-                
+
                 Spacer(modifier = Modifier.width(16.dp))
-                
+
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = title, fontSize = 19.sp, fontWeight = FontWeight.Black, color = Color(0xFF1E293B))
                     Text(text = subtitle, fontSize = 13.sp, color = Color(0xFF64748B), fontWeight = FontWeight.Medium)
                 }
-                
+
                 IconButton(
                     onClick = onPlayClick,
                     modifier = Modifier
