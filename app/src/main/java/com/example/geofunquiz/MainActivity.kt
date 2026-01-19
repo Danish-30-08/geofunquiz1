@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.example.geofunquiz.ui.theme.BottomNavigationBar
 import com.example.geofunquiz.ui.theme.JuniorExplorerScreen
+import com.example.geofunquiz.ui.theme.RankScreen
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
             var currentTab by remember { mutableStateOf("home") }
             var currentScreen by remember { mutableStateOf("main") }
 
-            // State Skor (PENTING: Jangan ubah nama variable ini)
+            // State Skor
             var finalScore by remember { mutableIntStateOf(0) }
             var totalQuestions by remember { mutableIntStateOf(0) }
 
@@ -48,17 +49,24 @@ class MainActivity : ComponentActivity() {
                             "home" -> {
                                 JuniorExplorerScreen(
                                     xp = authState.xp,
+                                    displayName = authState.displayName,
                                     onStartQuiz = { currentScreen = "quiz" },
                                     onStartCapitalsQuiz = { currentScreen = "capitals_quiz" },
                                     onStartTrivia = { currentScreen = "trivia_quiz" },
                                     onLogout = { handleLogout() }
                                 )
                             }
-                            "explore" -> { /* ExploreScreen() */ }
-                            "rank" -> { /* RankScreen() */ }
+                            "explore" -> { 
+                                ExploreScreen() 
+                            }
+                            "rank" -> { 
+                                RankScreen(authViewModel = authViewModel) 
+                            }
                             "profile" -> {
                                 ProfileScreen(
                                     xp = authState.xp,
+                                    rank = authState.rank,
+                                    displayName = authState.displayName,
                                     onLogout = { handleLogout() }
                                 )
                             }
@@ -89,13 +97,12 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     "trivia_quiz" -> {
-                        // LOGIK TRIVIA: Menangkap skor (s) dan total (t)
                         TriviaQuizScreen(
                             onFinish = { s, t ->
-                                finalScore = s       // Simpan skor ke state MainActivity
-                                totalQuestions = t   // Simpan jumlah soalan ke state MainActivity
-                                authViewModel.saveQuizScore(s) // Simpan XP ke Firebase
-                                currentScreen = "score"        // Tukar ke skrin skor
+                                finalScore = s
+                                totalQuestions = t
+                                authViewModel.saveQuizScore(s)
+                                currentScreen = "score"
                             }
                         )
                     }

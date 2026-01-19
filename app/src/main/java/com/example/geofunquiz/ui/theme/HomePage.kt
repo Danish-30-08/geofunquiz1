@@ -35,9 +35,10 @@ val TriviaIconBg = Color(0xFFFFEDD5)
 @Composable
 fun JuniorExplorerScreen(
     xp: Int = 0,
+    displayName: String = "Junior Explorer",
     onStartQuiz: () -> Unit = {},
     onStartCapitalsQuiz: () -> Unit = {},
-    onStartTrivia: () -> Unit = {}, // Parameter baru untuk Trivia
+    onStartTrivia: () -> Unit = {},
     onLogout: () -> Unit = {}
 ) {
     Surface(
@@ -50,7 +51,7 @@ fun JuniorExplorerScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            HeaderSection(xp = xp)
+            HeaderSection(xp = xp, displayName = displayName)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -67,7 +68,6 @@ fun JuniorExplorerScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 1. Flag Detective Card
             MissionCard(
                 icon = Icons.Rounded.Public,
                 iconColor = Color.White,
@@ -81,7 +81,6 @@ fun JuniorExplorerScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 2. Capital City Finder Card
             MissionCard(
                 icon = Icons.Rounded.LocationOn,
                 iconColor = Color(0xFF22C55E),
@@ -97,7 +96,6 @@ fun JuniorExplorerScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 3. Fun Facts Trivia Card (Kini Berfungsi!)
             MissionCard(
                 icon = Icons.Rounded.Star,
                 iconColor = Color(0xFFF97316),
@@ -106,7 +104,7 @@ fun JuniorExplorerScreen(
                 title = "Fun Facts Trivia",
                 subtitle = "Trivia about culture & history",
                 playButtonColor = Color(0xFFF97316),
-                onPlayClick = onStartTrivia, // Disambungkan ke navigasi
+                onPlayClick = onStartTrivia,
                 showBottomGradient = true,
                 gradientColor = Color(0xFFFFEDD5)
             )
@@ -117,7 +115,7 @@ fun JuniorExplorerScreen(
 }
 
 @Composable
-fun HeaderSection(xp: Int = 0) {
+fun HeaderSection(xp: Int = 0, displayName: String = "Junior Explorer") {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -126,7 +124,7 @@ fun HeaderSection(xp: Int = 0) {
         Column {
             Text(text = "Hi there,", fontSize = 14.sp, color = Color.Gray, fontWeight = FontWeight.Bold)
             Text(
-                text = "Junior Explorer!",
+                text = "$displayName!",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Black,
                 color = Color(0xFF1E293B)

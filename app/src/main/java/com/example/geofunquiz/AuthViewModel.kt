@@ -7,8 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.AggregateSource
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -21,6 +25,8 @@ data class AuthUiState(
     val email: String = "",
     val password: String = "",
     val xp: Int = 0,
+    val rank: Int = 0,
+    val displayName: String = "Junior Explorer",
     val isSavingScore: Boolean = false
 )
 
@@ -46,27 +52,61 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
         auth.addAuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             if (user != null) {
-                fetchUserData(user.uid)
+                val extractedName = user.email?.substringBefore("@") ?: "Junior Explorer"
+                _ui.value = _ui.value.copy(displayName = extractedName)
+                fetchUserData(user.uid, user.email)
             } else {
-                _ui.value = _ui.value.copy(xp = 0)
+                _ui.value = _ui.value.copy(xp = 0, rank = 0, displayName = "Junior Explorer")
             }
         }
     }
 
-    private fun fetchUserData(uid: String) {
+    private fun fetchUserData(uid: String, email: String?) {
         viewModelScope.launch {
             try {
                 val doc = db.collection("users").document(uid).get().await()
                 if (doc.exists()) {
                     val xp = doc.getLong("xp")?.toInt() ?: 0
                     _ui.value = _ui.value.copy(xp = xp)
+                    // Update email in Firestore if missing
+                    if (email != null && doc.getString("email") == null) {
+                        db.collection("users").document(uid).update("email", email)
+                    }
+                    calculateRank(xp, uid)
                 } else {
                     // Create initial user doc if it doesn't exist
-                    db.collection("users").document(uid).set(mapOf("xp" to 0)).await()
-                    _ui.value = _ui.value.copy(xp = 0)
+                    val data = mutableMapOf<String, Any>("xp" to 0)
+                    if (email != null) data["email"] = email
+                    db.collection("users").document(uid).set(data).await()
+                    _ui.value = _ui.value.copy(xp = 0, rank = 0)
                 }
             } catch (e: Exception) {
                 // Silently fail or log
+            }
+        }
+    }
+
+    private fun calculateRank(userXp: Int, uid: String) {
+        viewModelScope.launch {
+            try {
+                // 1. Count users with strictly more XP
+                val moreXpCount = db.collection("users")
+                    .whereGreaterThan("xp", userXp)
+                    .count()
+                    .get(AggregateSource.SERVER).await().count
+                
+                // 2. Count users with the same XP but a lower ID (tie-break)
+                val sameXpCount = db.collection("users")
+                    .whereEqualTo("xp", userXp)
+                    .whereLessThan(FieldPath.documentId(), uid)
+                    .count()
+                    .get(AggregateSource.SERVER).await().count
+                
+                val finalRank = moreXpCount + sameXpCount + 1
+                _ui.value = _ui.value.copy(rank = finalRank.toInt())
+            } catch (e: Exception) {
+                // Fail silently
+                e.printStackTrace()
             }
         }
     }
@@ -92,7 +132,10 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
                 val user = result.user
                 if (user != null) {
                     // Create user profile in Firestore
-                    db.collection("users").document(user.uid).set(mapOf("xp" to 0)).await()
+                    db.collection("users").document(user.uid).set(mapOf(
+                        "xp" to 0,
+                        "email" to email
+                    )).await()
                 }
                 emitToast("Registration successful!")
                 _event.emit(AuthEvent.NavigateToMain)
@@ -158,6 +201,9 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
                 val updatedXp = doc.getLong("xp")?.toInt() ?: 0
                 _ui.value = _ui.value.copy(xp = updatedXp)
                 
+                // Recalculate Rank
+                calculateRank(updatedXp, user.uid)
+                
                 emitToast("+$xpToAdd XP earned!")
             } catch (e: Exception) {
                 emitToast("Failed to save score: ${e.message}")
@@ -187,8 +233,15 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
                 if (user != null) {
                     // Check if user exists in Firestore, if not create
                     val doc = db.collection("users").document(user.uid).get().await()
+                    val data = mutableMapOf<String, Any>()
                     if (!doc.exists()) {
-                        db.collection("users").document(user.uid).set(mapOf("xp" to 0)).await()
+                        data["xp"] = 0
+                    }
+                    if (user.email != null) {
+                        data["email"] = user.email!!
+                    }
+                    if (data.isNotEmpty()) {
+                        db.collection("users").document(user.uid).set(data, SetOptions.merge()).await()
                     }
                 }
                 _event.emit(AuthEvent.NavigateToMain)

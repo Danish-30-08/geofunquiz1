@@ -36,7 +36,7 @@ data class Question(
 
 @Composable
 fun QuizScreen(onFinish: (Int, Int) -> Unit) {
-    val questions = remember {
+    val allQuestions = remember {
         listOf(
             Question(1, "Which country does this flag belong to?", "BR", listOf("Brazil", "Argentina", "Portugal", "Spain"), 0),
             Question(2, "Identify this flag:", "JP", listOf("South Korea", "China", "Japan", "Vietnam"), 2),
@@ -56,6 +56,9 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
         )
     }
 
+    // Ambil 5 soalan secara rawak setiap kali skrin ini dipaparkan (play again)
+    val questions = remember { allQuestions.shuffled().take(5) }
+
     var currentQuestionIndex by remember { mutableIntStateOf(0) }
     var selectedOptionIndex by remember { mutableIntStateOf(-1) }
     var isAnswered by remember { mutableStateOf(false) }
@@ -65,7 +68,7 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
     val progress = (currentQuestionIndex + 1).toFloat() / questions.size
 
     Scaffold(
-        containerColor = Color(0xFFF0F7FF) // Match light blue background
+        containerColor = Color(0xFFF0F7FF)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -74,20 +77,18 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Top Progress Bar
             LinearProgressIndicator(
                 progress = { progress },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(10.dp)
                     .clip(CircleShape),
-                color = Color(0xFF22C55E), // Vibrant Green
+                color = Color(0xFF22C55E),
                 trackColor = Color(0xFFD1E4FF)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Question Info Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -116,7 +117,6 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Question Title
             Text(
                 text = currentQuestion.text,
                 fontSize = 26.sp,
@@ -128,7 +128,6 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Flag Display Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
@@ -150,7 +149,6 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Options List
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 currentQuestion.options.forEachIndexed { index, option ->
                     OptionCard(
@@ -173,7 +171,6 @@ fun QuizScreen(onFinish: (Int, Int) -> Unit) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Next Question Button
             if (isAnswered) {
                 Button(
                     onClick = {
@@ -224,14 +221,13 @@ fun OptionCard(
     isAnswered: Boolean,
     onClick: () -> Unit
 ) {
-    // Determine target colors for background and content
     val targetBgColor = when {
         isAnswered -> when {
-            isCorrect -> Color(0xFF22C55E) // Green for correct
-            isSelected -> Color(0xFFEF4444) // Red for wrong selection
-            else -> Color.White.copy(alpha = 0.5f) // Faded white
+            isCorrect -> Color(0xFF22C55E)
+            isSelected -> Color(0xFFEF4444)
+            else -> Color.White.copy(alpha = 0.5f)
         }
-        isSelected -> Color(0xFFD1E4FF) // Light blue when clicked before answer
+        isSelected -> Color(0xFFD1E4FF)
         else -> Color.White
     }
 

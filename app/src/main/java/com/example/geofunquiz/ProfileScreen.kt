@@ -18,20 +18,21 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ProfileScreen(
-    xp: Int, // Data XP sebenar dari Firebase melalui MainActivity
-    onLogout: () -> Unit // Fungsi untuk butang Leave Game
+    xp: Int, 
+    rank: Int = 0,
+    displayName: String = "Junior Explorer",
+    onLogout: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFBE6)) // Kuning krim selaras dengan Home
+            .background(Color(0xFFFFFBE6))
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
-        // --- 1. Gambar Profil ---
         Box(
             modifier = Modifier
                 .size(120.dp)
@@ -50,9 +51,8 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // --- 2. Nama & Level ---
         Text(
-            text = "Junior Explorer",
+            text = displayName,
             fontSize = 28.sp,
             fontWeight = FontWeight.Black,
             color = Color(0xFF1E293B)
@@ -66,26 +66,24 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- 3. Kotak Statistik (Data Dinamik) ---
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             ProfileStatCard(
                 label = "TOTAL XP",
-                value = xp.toString(), // Papar XP dari database
+                value = xp.toString(),
                 modifier = Modifier.weight(1f)
             )
             ProfileStatCard(
                 label = "CURRENT RANK",
-                value = "#124",
+                value = if (rank > 0) "#$rank" else "N/A",
                 modifier = Modifier.weight(1f)
             )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- 4. Koleksi Lencana (Dengan Logik Unlock) ---
         Text(
             text = "Your Badge Collection",
             modifier = Modifier.fillMaxWidth(),
@@ -96,18 +94,12 @@ fun ProfileScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Grid Lencana
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            // Baris 1
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                // Unlock jika XP >= 100
                 BadgeItem(label = "Starter", isLocked = xp < 100, modifier = Modifier.weight(1f))
-                // Unlock jika XP >= 500
                 BadgeItem(label = "Explorer", isLocked = xp < 500, modifier = Modifier.weight(1f))
-                // Unlock jika XP >= 1000
                 BadgeItem(label = "Master", isLocked = xp < 1000, modifier = Modifier.weight(1f))
             }
-            // Baris 2 (Masih Locked sebagai cabaran)
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 BadgeItem(label = "Elite", isLocked = xp < 2000, modifier = Modifier.weight(1f))
                 BadgeItem(label = "Legend", isLocked = xp < 5000, modifier = Modifier.weight(1f))
@@ -172,7 +164,7 @@ fun BadgeItem(label: String, isLocked: Boolean, modifier: Modifier = Modifier) {
             Icon(
                 imageVector = if (isLocked) Icons.Rounded.Lock else Icons.Rounded.EmojiEvents,
                 contentDescription = null,
-                tint = if (isLocked) Color(0xFFCBD5E1) else Color(0xFFFFD700), // Warna emas jika unlock
+                tint = if (isLocked) Color(0xFFCBD5E1) else Color(0xFFFFD700),
                 modifier = Modifier.size(30.dp)
             )
             Text(
